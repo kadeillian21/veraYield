@@ -27,12 +27,17 @@ export async function GET(req: NextRequest) {
     }
 
     // Security check: Only allow requests from your own domain
+    // Next.js 14+ needs headers to be used asynchronously
     const headersList = headers();
-    const referer = headersList.get('referer') || '';
-    const host = headersList.get('host') || '';
+    const referer = headersList.has('referer') ? headersList.get('referer') as string : '';
+    const host = headersList.has('host') ? headersList.get('host') as string : '';
     
     // Check if the request is coming from a valid source
-    const isValidReferer = !referer || referer.includes(host);
+    // In development or if referer is missing, we'll allow the request
+    // In production, validate the referer against the host
+    const isValidReferer = process.env.NODE_ENV === 'development' || 
+                           !referer || 
+                           referer.includes(host);
     
     if (!isValidReferer) {
       console.warn("Invalid referer detected:", referer);
