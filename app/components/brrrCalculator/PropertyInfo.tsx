@@ -6,7 +6,6 @@ import { DealData } from '../dealAnalyzer/DealAnalyzer';
 // Now supports both the BRRRR calculator and the deal analyzer
 interface PropertyInfoProps {
   dealData: DealData;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   updateDealData: (updates: Partial<DealData>) => void;
 }
 

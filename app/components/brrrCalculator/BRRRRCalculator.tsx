@@ -100,6 +100,7 @@ export default function BRRRRCalculator() {
     id: uuidv4(),
     name: 'New BRRRR Deal',
     address: '',
+    strategy: 'brrrr',
     createdAt: new Date(),
     updatedAt: new Date(),
     config: defaultConfig
@@ -208,6 +209,7 @@ export default function BRRRRCalculator() {
       id: uuidv4(),
       name: 'New BRRRR Deal',
       address: '',
+      strategy: 'brrrr',
       createdAt: new Date(),
       updatedAt: new Date(),
       config: defaultConfig

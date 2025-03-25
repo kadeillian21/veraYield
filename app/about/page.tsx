@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -41,7 +42,7 @@ export default function About() {
           
           <h2 className="text-2xl font-bold mb-4 text-navy">Get Started</h2>
           <p>
-            Head back to the <a href="/" className="text-seaBlue hover:underline">home page</a> and 
+            Head back to the <Link href="/" className="text-seaBlue hover:underline">home page</Link> and 
             start analyzing your first deal. No account required - your analyses are saved locally 
             on your device.
           </p>
