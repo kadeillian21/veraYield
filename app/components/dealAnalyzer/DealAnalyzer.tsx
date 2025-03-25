@@ -337,27 +337,27 @@ export default function DealAnalyzer() {
         setSavedDeals([...savedDeals, updatedDeal]);
       }
       
-      // NOTE: API implementation is commented out for this standalone app
-      // In a real app, you would save to a database via API
-      /*
-      const response = await fetch('/api/deals', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedDeal)
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save deal to database');
+      // Save to database via API
+      try {
+        const response = await fetch('/api/deals', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedDeal)
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Failed to save deal to database:', errorData);
+          // Still show success since we saved to localStorage
+        }
+      } catch (apiError) {
+        console.error('API error:', apiError);
+        // Continue since we saved to localStorage
       }
       
-      const responseData = await response.json();
-      console.log('Deal saved to database:', responseData);
-      */
-      
-      alert('Deal saved successfully to localStorage!');
+      alert('Deal saved successfully!');
     } catch (error) {
       console.error('Error saving deal:', error);
       alert(`Error saving deal: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -900,20 +900,18 @@ export default function DealAnalyzer() {
             Previous Step
           </button>
           
-          <button
-            onClick={handleNext}
-            disabled={currentStep === steps.length - 1}
-            className={`py-2.5 px-6 rounded-md transition-all font-medium shadow-sm flex items-center ${
-              currentStep === steps.length - 1 
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                : 'btn btn-success hover:translate-x-[2px]'
-            }`}
-          >
-            Next Step
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {/* Only show Next Step button if not on the last step (summary) */}
+          {currentStep < steps.length - 1 && (
+            <button
+              onClick={handleNext}
+              className="py-2.5 px-6 rounded-md transition-all font-medium shadow-sm flex items-center btn btn-success hover:translate-x-[2px]"
+            >
+              Next Step
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import React from 'react';
+import AuthButton from './auth/AuthButton';
 
 const Header = () => {
   return (
@@ -12,26 +13,37 @@ const Header = () => {
             VeraYield
           </Link>
         </div>
-        <nav>
-          <ul className="flex space-x-6">
-            <li>
-              <Link 
-                href="/" 
-                className="text-white hover:text-turquoise transition-colors"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link 
-                href="/about" 
-                className="text-white hover:text-turquoise transition-colors"
-              >
-                About
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <div className="flex items-center space-x-6">
+          <nav>
+            <ul className="flex space-x-6">
+              <li>
+                <Link 
+                  href="/" 
+                  className="text-white hover:text-turquoise transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/about" 
+                  className="text-white hover:text-turquoise transition-colors"
+                >
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/deals" 
+                  className="text-white hover:text-turquoise transition-colors"
+                >
+                  My Deals
+                </Link>
+              </li>
+            </ul>
+          </nav>
+          <AuthButton />
+        </div>
       </div>
     </header>
   );

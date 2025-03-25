@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VeraYield
+
+Modern Real Estate Investment Analysis Platform
+
+## Features
+
+- Real estate investment deal analysis
+- Multiple investment strategies (BRRRR, Long-term Rental, Short-term Rental, Multi-family, House Hack)
+- User authentication with Google OAuth
+- Save and manage deals
+- Investment metrics calculations
+- Cash flow projections
+
+## Tech Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- TailwindCSS
+- Prisma ORM
+- NextAuth.js
+- PostgreSQL
+- Chart.js
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18+ and npm
+- PostgreSQL database
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Copy the `.env.example` file to `.env.local` and update the environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+4. Set up the following environment variables in `.env.local`:
+   - `DATABASE_URL`: Your PostgreSQL connection string
+   - `NEXTAUTH_URL`: Your app URL (http://localhost:3000 for development)
+   - `NEXTAUTH_SECRET`: A random string for session encryption (generate with `openssl rand -base64 32`)
+   - `GOOGLE_CLIENT_ID`: Google OAuth client ID
+   - `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+5. Set up Google OAuth
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth client ID"
+   - Select "Web application" as the application type
+   - Add "http://localhost:3000" to "Authorized JavaScript origins"
+   - Add "http://localhost:3000/api/auth/callback/google" to "Authorized redirect URIs"
+   - Copy the client ID and client secret to your `.env.local` file
 
-## Learn More
+6. Set up the database:
+   ```bash
+   npx prisma migrate dev --name init
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+7. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+8. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+- `/app` - Next.js application routes and components
+- `/app/api` - API routes
+- `/app/components` - React components
+- `/app/utils` - Utility functions and business logic
+- `/prisma` - Prisma ORM schema and migrations
+- `/public` - Static assets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.

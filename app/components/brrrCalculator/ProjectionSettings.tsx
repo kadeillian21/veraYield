@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   PropertyValueChangeEvent,
   RentChangeEvent,
@@ -28,54 +28,126 @@ interface ProjectionSettingsProps {
 export default function ProjectionSettings({
   projectionMonths,
   updateProjectionMonths,
+  propertyValueChanges,
   updatePropertyValueChanges,
+  rentChangeEvents,
   updateRentChangeEvents,
   annualExpenseAppreciationRate = 0.02,
   updateExpenseAppreciationRate
 }: ProjectionSettingsProps) {
-  // Set default appreciation rates
-  const [propertyAppreciationRate, setPropertyAppreciationRate] = useState(0.03); // 3% default
-  const [rentIncreaseRate, setRentIncreaseRate] = useState(0.03); // 3% default
-  const [expenseIncreaseRate, setExpenseIncreaseRate] = useState(annualExpenseAppreciationRate); // From props
-  
-  // Apply property appreciation rate to the config when changed
+  // Prevents useEffect from running on first render
+  const isFirstRender = useRef(true);
+  const isRatesApplied = useRef(false);
+
+  // LOCAL state for UI only - will be applied to parent state on changes with debouncing
+  const [localPropertyRate, setLocalPropertyRate] = useState(() => {
+    // Extract rate from propertyValueChanges if available
+    const rateEvent = propertyValueChanges.find(event => event.month === 0);
+    return rateEvent ? rateEvent.newValue : 0.03; // default to 3%
+  });
+
+  const [localRentRate, setLocalRentRate] = useState(() => {
+    // Extract rate from rentChangeEvents if available
+    const rateEvent = rentChangeEvents.find(event => event.month === 0);
+    return rateEvent ? Number(rateEvent.newRent) : 0.03; // default to 3%
+  });
+
+  const [localExpenseRate, setLocalExpenseRate] = useState(annualExpenseAppreciationRate);
+
+  // Initialize local state once on mount
   useEffect(() => {
-    // Create a placeholder event to store the rate
-    const rateEvent: PropertyValueChangeEvent = {
-      month: 0, // Special marker to indicate this is a global rate
-      newValue: propertyAppreciationRate 
-    };
-    
-    // Start with just this event
-    const events = [rateEvent];
-    updatePropertyValueChanges(events);
-  }, [propertyAppreciationRate, updatePropertyValueChanges]);
-  
-  // Apply rent increase rate to the config when changed
-  useEffect(() => {
-    // Create a placeholder event to store the rate
-    const rateEvent: RentChangeEvent = {
-      month: 0, // Special marker to indicate this is a global rate
-      newRent: rentIncreaseRate
-    };
-    
-    // Start with just this event
-    const events = [rateEvent];
-    updateRentChangeEvents(events);
-  }, [rentIncreaseRate, updateRentChangeEvents]);
-  
-  // Update expense appreciation rate in parent when changed locally
-  useEffect(() => {
-    if (updateExpenseAppreciationRate) {
-      updateExpenseAppreciationRate(expenseIncreaseRate);
+    // Only run once on mount
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+
+      // Apply initial property rate to parent if not already set
+      if (!propertyValueChanges.some(e => e.month === 0)) {
+        const initialPropertyEvent: PropertyValueChangeEvent = {
+          month: 0,
+          newValue: localPropertyRate
+        };
+        updatePropertyValueChanges([initialPropertyEvent]);
+      }
+
+      // Apply initial rent rate to parent if not already set
+      if (!rentChangeEvents.some(e => e.month === 0)) {
+        const initialRentEvent: RentChangeEvent = {
+          month: 0,
+          newRent: localRentRate
+        };
+        updateRentChangeEvents([initialRentEvent]);
+      }
+
+      // Apply initial expense rate if not already set
+      if (updateExpenseAppreciationRate && 
+          annualExpenseAppreciationRate !== localExpenseRate) {
+        updateExpenseAppreciationRate(localExpenseRate);
+      }
     }
-  }, [expenseIncreaseRate, updateExpenseAppreciationRate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally omitting deps as we only want this to run once
   
-  // Update local state when props change
+  // Apply property rate with debouncing
   useEffect(() => {
-    setExpenseIncreaseRate(annualExpenseAppreciationRate);
-  }, [annualExpenseAppreciationRate]);
+    // Skip initial render
+    if (isFirstRender.current) return;
+    
+    // Create a timeout to apply the changes after a delay
+    const timer = setTimeout(() => {
+      const rateEvent: PropertyValueChangeEvent = {
+        month: 0,
+        newValue: localPropertyRate
+      };
+      
+      // Replace any existing rate event or add this one
+      const filteredEvents = propertyValueChanges.filter(event => event.month !== 0);
+      updatePropertyValueChanges([...filteredEvents, rateEvent]);
+      isRatesApplied.current = true;
+    }, 500); // 500ms debounce
+    
+    // Cleanup function to clear the timeout if the component unmounts or the value changes again
+    return () => clearTimeout(timer);
+  }, [localPropertyRate, propertyValueChanges, updatePropertyValueChanges]);
   
+  // Apply rent rate with debouncing
+  useEffect(() => {
+    // Skip initial render
+    if (isFirstRender.current) return;
+    
+    // Create a timeout to apply the changes after a delay
+    const timer = setTimeout(() => {
+      const rateEvent: RentChangeEvent = {
+        month: 0,
+        newRent: localRentRate
+      };
+      
+      // Replace any existing rate event or add this one
+      const filteredEvents = rentChangeEvents.filter(event => event.month !== 0);
+      updateRentChangeEvents([...filteredEvents, rateEvent]);
+      isRatesApplied.current = true;
+    }, 500); // 500ms debounce
+    
+    // Cleanup function to clear the timeout if the component unmounts or the value changes again
+    return () => clearTimeout(timer);
+  }, [localRentRate, rentChangeEvents, updateRentChangeEvents]);
+  
+  // Apply expense rate with debouncing
+  useEffect(() => {
+    // Skip initial render
+    if (isFirstRender.current) return;
+    
+    // Create a timeout to apply the changes after a delay
+    const timer = setTimeout(() => {
+      if (updateExpenseAppreciationRate) {
+        updateExpenseAppreciationRate(localExpenseRate);
+        isRatesApplied.current = true;
+      }
+    }, 500); // 500ms debounce
+    
+    // Cleanup function to clear the timeout if the component unmounts or the value changes again
+    return () => clearTimeout(timer);
+  }, [localExpenseRate, updateExpenseAppreciationRate]);
+
   // Years and months conversion
   const projectionYears = Math.ceil(projectionMonths / 12);
   
@@ -149,10 +221,8 @@ export default function ProjectionSettings({
                 Annual Property Appreciation Rate
               </label>
               <PercentageInput
-                value={propertyAppreciationRate}
-                onChange={(value) => {
-                  setPropertyAppreciationRate(value);
-                }}
+                value={localPropertyRate}
+                onChange={setLocalPropertyRate}
                 placeholder="3.0"
               />
             </div>
@@ -160,7 +230,7 @@ export default function ProjectionSettings({
             <div className="md:ml-8 mt-4 md:mt-0">
               <p className="font-medium text-black">What this means:</p>
               <ul className="list-disc list-inside text-sm mt-1 space-y-1 text-black">
-                <li>Property value will increase by {(propertyAppreciationRate * 100).toFixed(1)}% each year</li>
+                <li>Property value will increase by {(localPropertyRate * 100).toFixed(1)}% each year</li>
                 <li>Typical range: 2-3% (in line with inflation)</li>
                 <li>This rate applies continuously for the entire projection</li>
               </ul>
@@ -184,10 +254,8 @@ export default function ProjectionSettings({
                 Annual Rent Increase Rate
               </label>
               <PercentageInput
-                value={rentIncreaseRate}
-                onChange={(value) => {
-                  setRentIncreaseRate(value);
-                }}
+                value={localRentRate}
+                onChange={setLocalRentRate}
                 placeholder="3.0"
               />
             </div>
@@ -195,7 +263,7 @@ export default function ProjectionSettings({
             <div className="md:ml-8 mt-4 md:mt-0">
               <p className="font-medium text-black">What this means:</p>
               <ul className="list-disc list-inside text-sm mt-1 space-y-1 text-black">
-                <li>Rent will increase by {(rentIncreaseRate * 100).toFixed(1)}% each year</li>
+                <li>Rent will increase by {(localRentRate * 100).toFixed(1)}% each year</li>
                 <li>Typical range: 2-3% (in line with inflation)</li>
                 <li>This rate applies continuously for the entire projection</li>
               </ul>
@@ -221,8 +289,8 @@ export default function ProjectionSettings({
               </label>
               <div className="flex items-center">
                 <PercentageInput
-                  value={expenseIncreaseRate}
-                  onChange={setExpenseIncreaseRate}
+                  value={localExpenseRate}
+                  onChange={setLocalExpenseRate}
                   placeholder="2.0"
                 />
                 <span className="ml-2 text-black">per year</span>
@@ -232,7 +300,7 @@ export default function ProjectionSettings({
             <div className="md:ml-8 mt-4 md:mt-0">
               <p className="font-medium text-black">What this means:</p>
               <ul className="list-disc list-inside text-sm mt-1 space-y-1 text-black">
-                <li>All operating expenses will increase by {(expenseIncreaseRate * 100).toFixed(1)}% each year</li>
+                <li>All operating expenses will increase by {(localExpenseRate * 100).toFixed(1)}% each year</li>
                 <li>Typical range: 2-3% (follows inflation)</li>
                 <li>Does not affect mortgage payments</li>
               </ul>
