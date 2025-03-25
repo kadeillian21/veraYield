@@ -1,26 +1,83 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom styles for Deal Calculator */
+@layer components {
+  /* Label styles */
+  .brrrr-label {
+    @apply block text-sm font-medium text-gray-900 mb-1;
+  }
+  
+  /* Table styles */
+  .brrrr-table-header {
+    @apply text-gray-900 font-medium;
+  }
+  
+  /* Heading styles */
+  .brrrr-section-heading {
+    @apply font-semibold text-gray-900;
+  }
+  
+  /* Text styles */
+  .brrrr-description {
+    @apply text-gray-900;
+  }
+  
+  .brrrr-table-cell {
+    @apply text-gray-900 font-medium;
+  }
+  
+  /* Input styles */
+  .brrrr-input {
+    @apply w-full p-2.5 border border-gray-300 rounded-md focus:ring-navy focus:border-navy text-gray-900 font-medium placeholder:text-gray-600;
+  }
+  
+  /* Card styles */
+  .card {
+    @apply bg-white shadow-lg rounded-lg border border-gray-100 transition duration-200;
+  }
+  
+  .card-hover {
+    @apply hover:shadow-xl hover:border-navy/20 hover:scale-[1.01];
+  }
+  
+  /* Button styles */
+  .btn {
+    @apply py-2 px-4 rounded-md transition-colors font-medium shadow-sm;
+  }
+  
+  .btn-primary {
+    @apply bg-navy text-white hover:bg-navy/90;
+  }
+  
+  .btn-success {
+    @apply bg-grass text-white hover:bg-grass/90;
+  }
+  
+  .btn-secondary {
+    @apply bg-seaBlue text-white hover:bg-seaBlue/90;
+  }
+  
+  /* Wrapper styles */
+  .content-wrapper {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
   }
 }
 
+/* Base colors and typography */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --navy: #012030;
+  --seaBlue: #026873;
+  --turquoise: #04BF8A;
+  --forest: #025940;
+  --grass: #03A64A;
+}
+
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--background);
+  font-family: var(--font-inter), 'Inter', Arial, Helvetica, sans-serif;
 }
