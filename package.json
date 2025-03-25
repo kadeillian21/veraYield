@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "DOTENV_KEY= next build",
-    "start": "prisma generate && next build",
-    "lint": "next lint"
+    "build": "prisma generate && DOTENV_KEY= next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.8.0",
