@@ -17,7 +17,9 @@ export default function DealPage({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const { id } = params;
+  
+  // Properly unwrap params with React.use()
+  const { id } = React.use(params);
 
   useEffect(() => {
     const loadDeal = async () => {

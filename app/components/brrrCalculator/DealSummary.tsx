@@ -74,7 +74,7 @@ export default function DealSummary({
   
   // Export to PDF function
   const handleExportToPDF = async () => {
-    if (!summaryRef.current || !projection) return;
+    if (!projection) return;
     
     setIsExporting(true);
     
@@ -86,7 +86,7 @@ export default function DealSummary({
       // Create a new PDF document
       const doc = new jsPDF({
         orientation: 'portrait',
-        unit: 'px',
+        unit: 'pt',
         format: 'a4',
       });
       
@@ -109,55 +109,235 @@ export default function DealSummary({
       doc.setDrawColor(200, 200, 200);
       doc.line(40, 100, pageWidth - 40, 100);
       
-      // Use html2canvas to convert the summary to an image
-      const canvas = await html2canvas(summaryRef.current, {
-        scale: 2,
-        logging: false,
-        useCORS: true,
-        allowTaint: true,
+      // Extract data for creating a proper structured PDF
+      
+      // Key Metrics Section
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      let yPos = 130;
+      doc.text('Key Metrics', 40, yPos);
+      yPos += 20;
+      
+      const metrics = [
+        { label: 'Total Investment', value: `$${projection.summary.totalInvestment.toLocaleString()}` },
+        { label: 'Remaining Investment', value: `$${projection.summary.remainingInvestment.toLocaleString()}` },
+        { label: 'Cash-on-Cash Return', value: formatPercentage(projection.summary.cashOnCashReturn) },
+        { label: 'Internal Rate of Return', value: formatPercentage(projection.summary.internalRateOfReturn) },
+        { label: 'Final Property Value', value: `$${projection.summary.finalPropertyValue.toLocaleString()}` },
+        { label: 'Final Equity', value: `$${projection.summary.finalEquity.toLocaleString()}` },
+        { label: 'Average Monthly Cash Flow', value: `$${projection.summary.averageMonthlyCashFlow.toFixed(2)}` },
+        { label: 'BRRRR Status', value: projection.summary.successfulBRRRR ? 'Successful' : 'Partial' }
+      ];
+      
+      // Create a table for metrics
+      const metricsPerRow = 2;
+      const cellWidth = (pageWidth - 80) / metricsPerRow;
+      const cellHeight = 50;
+      
+      for (let i = 0; i < metrics.length; i += metricsPerRow) {
+        for (let j = 0; j < metricsPerRow && i + j < metrics.length; j++) {
+          const metric = metrics[i + j];
+          const xPos = 40 + j * cellWidth;
+          
+          doc.setFontSize(10);
+          doc.setTextColor(100, 100, 100);
+          doc.text(metric.label, xPos, yPos);
+          
+          doc.setFontSize(12);
+          doc.setTextColor(0, 0, 100);
+          doc.text(metric.value, xPos, yPos + 20);
+        }
+        yPos += cellHeight;
+      }
+      
+      // Add Monthly View section
+      yPos += 20;
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Monthly View', 40, yPos);
+      yPos += 20;
+      
+      // Selected Month
+      doc.setFontSize(12);
+      doc.text(`Month ${selectedMonth} ${selectedSnapshot.eventDescription ? `- ${selectedSnapshot.eventDescription}` : ''}`, 40, yPos);
+      yPos += 20;
+      
+      const monthlyDetails = [
+        { label: 'Property Value', value: `$${selectedSnapshot.propertyValue.toLocaleString()}` },
+        { label: 'Equity', value: `$${selectedSnapshot.equity.toLocaleString()}` },
+        { label: 'Loan Balance', value: `$${selectedSnapshot.loanBalance.toLocaleString()}` },
+        { label: 'Remaining Investment', value: `$${selectedSnapshot.remainingInvestment.toLocaleString()}` },
+        { label: 'Monthly Cash Flow', value: `$${selectedSnapshot.cashFlow.toFixed(2)}` },
+        { label: 'Cash-on-Cash Return', value: formatPercentage(selectedSnapshot.cashOnCash) },
+        { label: 'Annualized Return', value: formatPercentage(selectedSnapshot.annualizedReturn) }
+      ];
+      
+      monthlyDetails.forEach(detail => {
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text(detail.label, 40, yPos);
+        
+        doc.setFontSize(11);
+        doc.setTextColor(0, 0, 0);
+        doc.text(detail.value, 250, yPos);
+        yPos += 15;
       });
       
-      // Calculate appropriate dimensions to fit on PDF
-      const imgWidth = pageWidth - 80; // 40px margins on each side
-      const ratio = canvas.width / imgWidth;
-      const imgHeight = canvas.height / ratio;
-      
-      // Split into multiple pages if needed
-      const contentHeight = pageHeight - 120; // Account for header
-      let remainingHeight = imgHeight;
-      let destY = 120; // Start after header
-      
-      while (remainingHeight > 0) {
-        // Calculate height to use for current page
-        const chunkHeight = Math.min(remainingHeight, contentHeight);
-        
-        // Calculate the portion of canvas to use
-        const destHeight = chunkHeight;
-        
-        // Convert the canvas to image data
-        const imgData = canvas.toDataURL('image/png');
-        
-        // Add image to current page
-        doc.addImage(
-          imgData,
-          'PNG',
-          40, // X position
-          destY, // Y position
-          imgWidth, // Width
-          destHeight, // Height
-          undefined, // Alias
-          'FAST', // Compression
-          0, // Rotation
-        );
-        
-        remainingHeight -= chunkHeight;
-        
-        // Add a new page if there's more content
-        if (remainingHeight > 0) {
-          doc.addPage();
-          destY = 40; // Reset Y position for new page
-        }
+      // Add Timeline View
+      if (yPos > pageHeight - 100) {
+        doc.addPage();
+        yPos = 40;
+      } else {
+        yPos += 20;
       }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Timeline View', 40, yPos);
+      yPos += 20;
+      
+      // Create table headers for timeline
+      const headers = ['Year', 'Property Value', 'Cash Flow', 'Equity', 'Event'];
+      const colWidths = [60, 100, 100, 100, 140];
+      
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      
+      let xPosition = 40;
+      headers.forEach((header, i) => {
+        doc.text(header, xPosition, yPos);
+        xPosition += colWidths[i];
+      });
+      
+      yPos += 15;
+      doc.setDrawColor(200, 200, 200);
+      doc.line(40, yPos - 10, pageWidth - 40, yPos - 10);
+      
+      // Filter timeline data to yearly events and refinance events
+      const timelineData = projection.monthlySnapshots.filter(
+        snapshot => snapshot.month % 12 === 0 || 
+                   (snapshot.eventDescription && snapshot.eventDescription.includes('Refinanced'))
+      );
+      
+      // Populate timeline table
+      doc.setFontSize(9);
+      timelineData.forEach(snapshot => {
+        if (yPos > pageHeight - 40) {
+          doc.addPage();
+          yPos = 40;
+          
+          // Redraw headers on new page
+          xPosition = 40;
+          doc.setFontSize(10);
+          doc.setTextColor(0, 0, 0);
+          headers.forEach((header, i) => {
+            doc.text(header, xPosition, yPos);
+            xPosition += colWidths[i];
+          });
+          
+          yPos += 15;
+          doc.setDrawColor(200, 200, 200);
+          doc.line(40, yPos - 10, pageWidth - 40, yPos - 10);
+        }
+        
+        xPosition = 40;
+        
+        // Year/Month column
+        if (snapshot.month % 12 === 0) {
+          doc.text(`Year ${snapshot.month / 12}`, xPosition, yPos);
+        } else {
+          doc.text(`Month ${snapshot.month}`, xPosition, yPos);
+        }
+        xPosition += colWidths[0];
+        
+        // Property Value column
+        doc.text(`$${snapshot.propertyValue.toLocaleString()}`, xPosition, yPos);
+        xPosition += colWidths[1];
+        
+        // Cash Flow column
+        doc.text(`$${snapshot.cashFlow.toFixed(2)}`, xPosition, yPos);
+        xPosition += colWidths[2];
+        
+        // Equity column
+        doc.text(`$${snapshot.equity.toLocaleString()}`, xPosition, yPos);
+        xPosition += colWidths[3];
+        
+        // Event column
+        if (snapshot.eventDescription) {
+          doc.text(snapshot.eventDescription, xPosition, yPos);
+        }
+        
+        yPos += 15;
+      });
+      
+      // Add Final Analysis section
+      if (yPos > pageHeight - 100) {
+        doc.addPage();
+        yPos = 40;
+      } else {
+        yPos += 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text('Final Analysis', 40, yPos);
+      yPos += 20;
+      
+      doc.setFontSize(10);
+      const analysisItems = [
+        {
+          title: 'BRRRR Status:',
+          content: projection.summary.successfulBRRRR 
+            ? 'This deal successfully recycles your capital, allowing you to reinvest in your next property.' 
+            : 'This is a partial BRRRR deal. You will still have some capital invested in the property.'
+        },
+        {
+          title: 'Cash Flow:',
+          content: projection.summary.averageMonthlyCashFlow >= 300
+            ? 'This deal has strong cash flow - it should provide good monthly income.'
+            : projection.summary.averageMonthlyCashFlow >= 100
+            ? 'This deal has moderate cash flow - it should cover expenses with some profit.'
+            : projection.summary.averageMonthlyCashFlow >= 0
+            ? 'This deal has minimal cash flow - it covers costs but provides limited income.'
+            : 'This deal has negative cash flow - you may need to contribute additional funds.'
+        },
+        {
+          title: 'Return on Investment:',
+          content: projection.summary.internalRateOfReturn >= 0.15
+            ? 'This deal has an excellent IRR of ' + formatPercentage(projection.summary.internalRateOfReturn) + '.'
+            : projection.summary.internalRateOfReturn >= 0.10
+            ? 'This deal has a good IRR of ' + formatPercentage(projection.summary.internalRateOfReturn) + '.'
+            : 'This deal has a modest IRR of ' + formatPercentage(projection.summary.internalRateOfReturn) + '.'
+        },
+        {
+          title: 'Key Refinance Events:',
+          content: dealData.config.refinanceEvents && dealData.config.refinanceEvents.length > 0
+            ? `You've planned ${dealData.config.refinanceEvents.length} refinance event(s) with the first at month ${dealData.config.refinanceEvents[0].month}.`
+            : 'You have not scheduled any refinance events.'
+        }
+      ];
+      
+      analysisItems.forEach(item => {
+        // Check if we need a new page
+        if (yPos > pageHeight - 40) {
+          doc.addPage();
+          yPos = 40;
+        }
+        
+        doc.setTextColor(0, 0, 100);
+        doc.setFontSize(11);
+        doc.text(item.title, 40, yPos);
+        
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
+        
+        // Split long text into multiple lines
+        const maxWidth = pageWidth - 80;
+        const lines = doc.splitTextToSize(item.content, maxWidth);
+        doc.text(lines, 40, yPos + 15);
+        
+        yPos += 15 + (lines.length * 12);
+      });
       
       // Save the PDF
       doc.save(fileName);

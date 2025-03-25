@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
-// Disable dotenv-vault by removing DOTENV_KEY from environment
-try {
-  delete process.env.DOTENV_KEY;
-} catch (error) {
-  console.warn("Failed to delete DOTENV_KEY", error);
+// Clear DOTENV_KEY if there's no .env.vault file to avoid warnings
+if (process.env.DOTENV_KEY) {
+  const fs = require('fs');
+  const path = require('path');
+  const vaultPath = path.resolve(process.cwd(), '.env.vault');
+  
+  if (!fs.existsSync(vaultPath)) {
+    delete process.env.DOTENV_KEY;
+  }
 }
 
 const nextConfig: NextConfig = {
