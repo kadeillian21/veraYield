@@ -65,9 +65,9 @@ export default function PropertyInfo({ dealData, updateDealData }: PropertyInfoP
         
         setSuggestions(data.predictions || []);
         setShowSuggestions(true);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error fetching address suggestions:', error);
-        setErrorMessage(error.message || 'Failed to fetch suggestions');
+        setErrorMessage(error instanceof Error ? error.message : 'Failed to fetch suggestions');
         setSuggestions([]);
       } finally {
         setIsLoading(false);

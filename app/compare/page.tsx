@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ComparisonSelector from '../components/dealComparison/ComparisonSelector';
@@ -11,6 +11,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 
 export default function ComparePage() {
+  const [deals, setDeals] = useState<DealData[]>([]);
+  const [selectedDeals, setSelectedDeals] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
+  const router = useRouter();
+  
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-8 text-center">Loading...</div>}>
+      <ComparPageContent />
+    </Suspense>
+  );
+}
+
+function ComparPageContent() {
   const [deals, setDeals] = useState<DealData[]>([]);
   const [selectedDeals, setSelectedDeals] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
