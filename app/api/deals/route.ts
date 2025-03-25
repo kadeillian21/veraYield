@@ -4,26 +4,46 @@ import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth-options';
 
 // GET /api/deals - Get all deals for current user
-export async function GET() {
+// GET /api/deals?id=xxx - Get a specific deal by ID
+export async function GET(req: NextRequest) {
   try {
     // Get the authenticated user
     const session = await getServerSession(authOptions);
     
-    // Query parameters for finding deals
-    const queryParams = {
-      orderBy: {
-        updatedAt: 'desc' as const,
-      },
-    };
+    // Check if we're requesting a specific deal by ID
+    const url = new URL(req.url);
+    const id = url.searchParams.get('id');
     
-    // If authenticated, filter by user ID
-    if (session?.user?.email) {
-      // For now, we'll just fetch all deals as we're not associating them with users yet
+    if (id) {
+      // Looking for a specific deal
+      const deal = await prisma.deal.findUnique({
+        where: {
+          id,
+        },
+      });
+      
+      if (!deal) {
+        return NextResponse.json({ error: 'Deal not found' }, { status: 404 });
+      }
+      
+      return NextResponse.json(deal);
+    } else {
+      // Get all deals
+      const queryParams = {
+        orderBy: {
+          updatedAt: 'desc' as const,
+        },
+      };
+      
+      // If authenticated, filter by user ID
+      if (session?.user?.email) {
+        // For now, we'll just fetch all deals as we're not associating them with users yet
+      }
+      
+      const deals = await prisma.deal.findMany(queryParams);
+      
+      return NextResponse.json(deals);
     }
-    
-    const deals = await prisma.deal.findMany(queryParams);
-
-    return NextResponse.json(deals);
   } catch (error) {
     console.error('Error fetching deals:', error);
     return NextResponse.json(

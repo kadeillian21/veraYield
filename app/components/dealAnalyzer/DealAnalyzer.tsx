@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import toast, { Toaster } from 'react-hot-toast';
 import StrategySelector from './StrategySelector';
 import Timeline from '../brrrCalculator/Timeline';
 import PropertyInfo from '../brrrCalculator/PropertyInfo';
@@ -206,8 +207,8 @@ export default function DealAnalyzer() {
   // State for saved deals (would normally be in a database)
   const [savedDeals, setSavedDeals] = useState<DealData[]>([]);
   
-  // State to control whether to show the saved deals grid
-  const [showSavedDeals, setShowSavedDeals] = useState(false);
+  // State to control whether to show the saved deals grid (commented out as currently unused)
+  // const [showSavedDeals, setShowSavedDeals] = useState(false);
 
   // Reset step when strategy changes
   useEffect(() => {
@@ -357,10 +358,10 @@ export default function DealAnalyzer() {
         // Continue since we saved to localStorage
       }
       
-      alert('Deal saved successfully!');
+      toast.success('Deal saved successfully!');
     } catch (error) {
       console.error('Error saving deal:', error);
-      alert(`Error saving deal: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      toast.error(`Error saving deal: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -370,7 +371,8 @@ export default function DealAnalyzer() {
     setCurrentStep(0);
   };
 
-  // Load a saved deal
+  // Load a saved deal (currently unused but kept for future use)
+  /* Commenting out unused functions to fix ESLint errors
   const loadDeal = (dealId: string) => {
     const dealToLoad = savedDeals.find(deal => deal.id === dealId);
     if (dealToLoad) {
@@ -382,17 +384,26 @@ export default function DealAnalyzer() {
     }
   };
 
-  // Delete a deal
+  // Delete a deal (currently unused but kept for future use)
   const deleteDeal = (dealId: string) => {
-    if (window.confirm('Are you sure you want to delete this deal?')) {
-      setSavedDeals(savedDeals.filter(deal => deal.id !== dealId));
-      
-      // If the current deal is being deleted, create a new one
-      if (dealData.id === dealId) {
-        createNewDeal();
+    toast.promise(
+      new Promise<void>((resolve) => {
+        setSavedDeals(savedDeals.filter(deal => deal.id !== dealId));
+        
+        // If the current deal is being deleted, create a new one
+        if (dealData.id === dealId) {
+          createNewDeal();
+        }
+        resolve();
+      }),
+      {
+        loading: 'Deleting deal...',
+        success: 'Deal deleted successfully!',
+        error: 'Failed to delete deal',
       }
-    }
+    );
   };
+  */
 
   // Render the current step content
   const renderStepContent = () => {
@@ -672,6 +683,7 @@ export default function DealAnalyzer() {
 
   return (
     <div className="bg-white shadow-xl rounded-2xl p-8 border border-gray-100">
+      <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       {/* Header section with title */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">VeraYield Analyzer</h1>
@@ -694,18 +706,7 @@ export default function DealAnalyzer() {
             </button>
           )}
           
-          {/* Deal Library Button - Toggle saved deals view */}
-          {savedDeals.length > 0 && (
-            <button
-              onClick={() => setShowSavedDeals(!showSavedDeals)}
-              className="btn btn-secondary flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-              {showSavedDeals ? 'Hide Saved Deals' : 'View Saved Deals'}
-            </button>
-          )}
+          {/* Removed "View Saved Deals" button */}
         </div>
         
         {selectedStrategy && (
@@ -742,107 +743,7 @@ export default function DealAnalyzer() {
         )}
       </div>
       
-      {/* Saved Deals Grid */}
-      {showSavedDeals && savedDeals.length > 0 && (
-        <div className="mb-8 bg-white p-6 rounded-xl shadow-md border border-gray-100">
-          <h2 className="text-2xl font-bold text-navy mb-6 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            Saved Deals
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {savedDeals.map(deal => (
-              <div 
-                key={deal.id} 
-                className="card card-hover p-5 cursor-pointer bg-white border-l-4 border-l-navy"
-                onClick={() => loadDeal(deal.id)}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-xl text-gray-900">{deal.address || "Untitled Deal"}</h3>
-                    <p className="text-xs text-navy/70 mt-1 font-medium">
-                      Updated: {new Date(deal.updatedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-navy text-white shadow-sm">
-                    {getStrategyDisplayName(deal.strategy)}
-                  </span>
-                </div>
-                
-                {/* Quick stats if available */}
-                <div className="mt-4 pt-3 border-t border-gray-100 text-sm grid grid-cols-2 gap-3">
-                  {deal.config.purchasePrice ? (
-                    <div className="flex flex-col">
-                      <span className="text-navy/70 font-medium">Purchase Price</span> 
-                      <span className="font-bold text-gray-900">${deal.config.purchasePrice.toLocaleString()}</span>
-                    </div>
-                  ) : null}
-                  
-                  {deal.config.operation?.monthlyRent ? (
-                    <div className="flex flex-col">
-                      <span className="text-navy/70 font-medium">Monthly Rent</span>
-                      <span className="font-bold text-gray-900">${deal.config.operation.monthlyRent.toLocaleString()}</span>
-                    </div>
-                  ) : null}
-                </div>
-                
-                <div className="mt-4 flex justify-between">
-                  <div className="flex space-x-1">
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        loadDeal(deal.id);
-                      }}
-                      className="btn btn-primary inline-flex items-center text-sm py-1.5"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      View
-                    </button>
-                    
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // Load the deal and advance to summary step
-                        loadDeal(deal.id);
-                        // Wait for deal to load, then click export button
-                        setTimeout(() => {
-                          const exportButton = document.querySelector('[data-export-pdf]');
-                          if (exportButton) {
-                            exportButton.scrollIntoView({ behavior: 'smooth' });
-                          }
-                        }, 500);
-                      }}
-                      className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded text-sm font-medium inline-flex items-center"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      PDF
-                    </button>
-                  </div>
-                  
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteDeal(deal.id);
-                    }}
-                    className="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded text-sm font-medium inline-flex items-center"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Saved Deals Grid removed */}
 
       {/* Current deal info */}
       {selectedStrategy && (
