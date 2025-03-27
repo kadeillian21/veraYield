@@ -11,83 +11,7 @@ import RefinanceDetails from '../../components/RefinanceDetails';
 import ProjectionSettings from '../../components/ProjectionSettings';
 import DealSummary from '../../components/DealSummary';
 import { ProjectionConfig } from '../../../utils/deals/projectionEngine';
-import { Deal, DealTypes } from '../../models';
-
-// Default projection configuration
-const defaultConfig: ProjectionConfig = {
-  acquisition: {
-    purchasePrice: 100000,
-    closingCosts: 3000,
-    rehabCosts: 25000,
-    rehabDurationMonths: 2,
-    purchaseLoanAmount: 75000,
-    purchaseLoanRate: 0.06,
-    purchaseLoanTermYears: 30,
-    otherInitialCosts: 2000,
-    includeHoldingCosts: {
-      mortgage: true,
-      taxes: true,
-      insurance: true,
-      maintenance: false,
-      propertyManagement: false,
-      utilities: true,
-      other: false
-    }
-  },
-  operation: {
-    monthlyRent: 1200,
-    otherMonthlyIncome: 0,
-    propertyTaxes: 1800,
-    insurance: 1200,
-    maintenance: 100,
-    propertyManagement: 10, // percentage
-    utilities: 0,
-    vacancyRate: 5, // percentage
-    otherExpenses: 50
-  },
-  projectionMonths: 60,
-  annualExpenseAppreciationRate: 0.02, // 2% default for expense growth
-  refinanceEvents: [
-    {
-      month: 3,
-      afterRepairValue: 150000,
-      refinanceLTV: 0.75,
-      refinanceRate: 0.05,
-      refinanceTermYears: 30,
-      refinanceClosingCosts: 3500
-    }
-  ],
-  propertyValueChanges: [],
-  rentChangeEvents: [],
-  expenseChangeEvents: [],
-  capitalExpenseEvents: [
-    {
-      component: "Roof",
-      lifespan: 25,
-      replacementCost: 12000,
-      lastReplaced: 15,
-      monthlyBudget: 40
-    },
-    {
-      component: "HVAC",
-      lifespan: 15,
-      replacementCost: 8000,
-      lastReplaced: 10,
-      monthlyBudget: 44.44
-    }
-  ]
-};
-
-// Steps in the BRRRR calculator process
-const steps = [
-  { id: 'property', label: 'Property Info' },
-  { id: 'acquisition', label: 'Acquisition' },
-  { id: 'rehab', label: 'Rehab' },
-  { id: 'rental', label: 'Rental' },
-  { id: 'refinance', label: 'Refinance' },
-  { id: 'projection', label: 'Projection' },
-  { id: 'summary', label: 'Summary' }
-];
+import { Deal, DealTypes, defaultDealConfig, strategySteps } from '../../models';
 
 export default function BRRRRCalculator() {
   // State for the current step in the process
@@ -101,7 +25,7 @@ export default function BRRRRCalculator() {
     strategy: DealTypes.BRRRR,
     createdAt: new Date(),
     updatedAt: new Date(),
-    config: defaultConfig
+    config: defaultDealConfig,
   });
 
   // State for saved deals (would normally be in a database)
@@ -142,7 +66,7 @@ export default function BRRRRCalculator() {
 
   // Handle moving to the next step
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < strategySteps.brrrr.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -156,7 +80,7 @@ export default function BRRRRCalculator() {
 
   // Jump to a specific step
   const jumpToStep = (stepIndex: number) => {
-    if (stepIndex >= 0 && stepIndex < steps.length) {
+    if (stepIndex >= 0 && stepIndex < strategySteps.brrrr.length) {
       setCurrentStep(stepIndex);
     }
   };
@@ -227,7 +151,7 @@ export default function BRRRRCalculator() {
       strategy: DealTypes.BRRRR,
       createdAt: new Date(),
       updatedAt: new Date(),
-      config: defaultConfig
+      config: defaultDealConfig
     });
     setCurrentStep(0);
   };
@@ -238,13 +162,13 @@ export default function BRRRRCalculator() {
     if (dealToLoad) {
       setDealData(dealToLoad);
       // Go to the summary step (last step) when loading a deal
-      setCurrentStep(steps.length - 1);
+      setCurrentStep(strategySteps.brrrr.length - 1);
     }
   };
 
   // Render the current step content
   const renderStepContent = () => {
-    switch (steps[currentStep].id) {
+    switch (strategySteps.brrrr[currentStep].id) {
       case 'property':
         return (
           <PropertyInfo 
@@ -417,7 +341,7 @@ export default function BRRRRCalculator() {
       {/* Timeline navigation */}
       <div className="bg-gray-50 p-4 rounded-lg mb-8">
         <Timeline 
-          steps={steps} 
+          steps={strategySteps.brrrr} 
           currentStep={currentStep} 
           onStepClick={jumpToStep} 
         />
@@ -446,7 +370,7 @@ export default function BRRRRCalculator() {
         </button>
         
         {/* Only show Next button if not on the last step (summary) */}
-        {currentStep < steps.length - 1 && (
+        {currentStep < strategySteps.brrrr.length - 1 && (
           <button
             onClick={handleNext}
             className="py-2 px-6 rounded-md transition-colors font-medium shadow-sm flex items-center bg-grass text-white hover:bg-grass/90"

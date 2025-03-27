@@ -337,8 +337,6 @@ export default function RehabDetails({
         </div>
       </div>
       
-      
-      
       {/* Rehab Cost Summary */}
       <div className="bg-green-50 p-6 rounded-lg shadow-sm border border-green-100 mt-6">
         <h4 className="text-lg font-medium text-green-900 mb-4">Rehab Cash Requirements</h4>
