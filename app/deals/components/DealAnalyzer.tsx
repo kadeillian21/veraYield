@@ -12,179 +12,11 @@ import RentalDetails from './RentalDetails';
 import RefinanceDetails from './RefinanceDetails';
 import ProjectionSettings from './ProjectionSettings';
 import DealSummary from './DealSummary';
-import ShortTermRentalIncome, { STRIncome } from '../strategies/shortTermRentals/ShortTermRentalIncome';
-import STRExpenses, { STRExpenses as STRExpensesType } from '../strategies/shortTermRentals/STRExpenses';
-import MultiFamilyUnits, { RentalUnit } from '../strategies/multifamily/MultiFamilyUnits';
-import HouseHackDetails, { HouseHackConfiguration } from '../strategies/houseHack/HouseHackDetails';
-import { ProjectionConfig } from '../../utils/deals/projectionEngine';
-
-// Investment strategies supported by the calculator
-export type InvestmentStrategy = 'brrrr' | 'longTermRental' | 'shortTermRental' | 'multifamily' | 'houseHack';
-
-// Strategy-specific step configurations
-const strategySteps: Record<InvestmentStrategy, Array<{ id: string; label: string }>> = {
-  brrrr: [
-    { id: 'property', label: 'Property Info' },
-    { id: 'acquisition', label: 'Acquisition' },
-    { id: 'rehab', label: 'Rehab' },
-    { id: 'rental', label: 'Rental' },
-    { id: 'refinance', label: 'Refinance' },
-    { id: 'projection', label: 'Projection' },
-    { id: 'summary', label: 'Summary' }
-  ],
-  longTermRental: [
-    { id: 'property', label: 'Property Info' },
-    { id: 'acquisition', label: 'Acquisition' },
-    { id: 'rental', label: 'Rental' },
-    { id: 'projection', label: 'Projection' },
-    { id: 'summary', label: 'Summary' }
-  ],
-  shortTermRental: [
-    { id: 'property', label: 'Property Info' },
-    { id: 'acquisition', label: 'Acquisition' },
-    { id: 'str-income', label: 'STR Income' },
-    { id: 'expenses', label: 'Expenses' },
-    { id: 'projection', label: 'Projection' },
-    { id: 'summary', label: 'Summary' }
-  ],
-  multifamily: [
-    { id: 'property', label: 'Property Info' },
-    { id: 'acquisition', label: 'Acquisition' },
-    { id: 'units', label: 'Units' },
-    { id: 'expenses', label: 'Expenses' },
-    { id: 'projection', label: 'Projection' },
-    { id: 'summary', label: 'Summary' }
-  ],
-  houseHack: [
-    { id: 'property', label: 'Property Info' },
-    { id: 'acquisition', label: 'Acquisition' },
-    { id: 'personal-unit', label: 'Your Unit' },
-    { id: 'rental-units', label: 'Rental Units' },
-    { id: 'expenses', label: 'Expenses' },
-    { id: 'projection', label: 'Projection' },
-    { id: 'summary', label: 'Summary' }
-  ]
-};
-
-export type DealData = {
-  id: string;
-  name: string;
-  address: string;
-  strategy: InvestmentStrategy;
-  createdAt: Date;
-  updatedAt: Date;
-  config: ExtendedProjectionConfig;
-};
-
-// Extended type for our all-strategy config
-interface ExtendedProjectionConfig extends ProjectionConfig {
-  // STR specific fields
-  strIncome?: STRIncome;
-  strExpenses?: STRExpensesType;
-  // Multi-family specific fields
-  units?: RentalUnit[];
-  // House hack specific fields
-  houseHack?: HouseHackConfiguration;
-  // General
-  purchasePrice?: number;
-}
-
-// Default projection configuration
-const defaultConfig: ExtendedProjectionConfig = {
-  acquisition: {
-    purchasePrice: 100000, // Setting a default purchase price
-    closingCosts: 3000,
-    rehabCosts: 20000,
-    rehabDurationMonths: 2,
-    purchaseLoanAmount: 80000, // Setting a default loan amount (80% LTV)
-    purchaseLoanRate: 0.07,
-    purchaseLoanTermYears: 30,
-    otherInitialCosts: 0,
-    includeHoldingCosts: {
-      mortgage: true,
-      taxes: true,
-      insurance: true,
-      maintenance: true,
-      propertyManagement: false,
-      utilities: true,
-      other: false
-    }
-  },
-  operation: {
-    monthlyRent: 0,
-    otherMonthlyIncome: 0,
-    propertyTaxes: 0,
-    insurance: 0,
-    maintenance: 0,
-    propertyManagement: 8, // percentage
-    utilities: 0,
-    vacancyRate: 5, // percentage
-    otherExpenses: 0
-  },
-  projectionMonths: 60,
-  refinanceEvents: [],
-  propertyValueChanges: [],
-  rentChangeEvents: [],
-  expenseChangeEvents: [],
-  capitalExpenseEvents: [],
-  
-  // Short-term rental specific defaults
-  strIncome: {
-    peakSeasonDaily: 150,
-    peakSeasonOccupancy: 90,
-    peakSeasonMonths: [6, 7, 8], // Summer months
-    midSeasonDaily: 100,
-    midSeasonOccupancy: 70,
-    midSeasonMonths: [4, 5, 9, 10], // Spring & Fall
-    lowSeasonDaily: 80,
-    lowSeasonOccupancy: 50,
-    lowSeasonMonths: [1, 2, 3, 11, 12], // Winter months
-    cleaningFee: 75,
-    otherFees: 25,
-    platformFee: 3 // percentage
-  },
-  strExpenses: {
-    propertyManagementFee: 20, // percentage
-    cleaningCosts: 85, // per turnover
-    suppliesPerMonth: 50,
-    utilityExpenses: 200,
-    propertyTaxes: 2400, // annual
-    insurance: 1800, // annual
-    furnitureReplacementPercent: 5, // percentage of revenue
-    maintenancePercent: 3, // percentage of revenue
-    advertisingPerMonth: 50,
-    subscriptionServices: 30, // per month
-    otherExpenses: 0 // per month
-  },
-  
-  // Multi-family specific defaults
-  units: [],
-  
-  // House hack specific defaults
-  houseHack: {
-    ownerUnit: {
-      unitNumber: 'A',
-      bedrooms: 2,
-      bathrooms: 1,
-      sqft: 900,
-      marketRent: 1200,
-      personalUsage: 100,
-      occupancyRate: 95
-    },
-    currentHousingCost: 1500,
-    personalUtilities: 150,
-    combinedUtilities: 100,
-    combinedInsurance: 1200,
-    combinedPropertyTax: 2400,
-    rentalUnits: [],
-    futurePlan: 'stay',
-    futurePropertyValueChange: 3,
-    futureDateOfChange: 12
-  },
-  
-  // Common property price reference
-  purchasePrice: 0
-};
+import ShortTermRentalIncome from '../strategies/shortTermRentals/STRIncome';
+import MultiFamilyUnits from '../strategies/multifamily/MultiFamilyUnits';
+import HouseHackDetails from '../strategies/houseHack/HouseHackDetails';
+import { Deal, DealTypes, defaultDealConfig, InvestmentStrategy, strategySteps } from '../models';
+import STRExpenses from '../strategies/shortTermRentals/STRExpenses';
 
 export default function DealAnalyzer() {
   // State for the selected investment strategy
@@ -194,18 +26,18 @@ export default function DealAnalyzer() {
   const [currentStep, setCurrentStep] = useState(0);
   
   // State for the deal data
-  const [dealData, setDealData] = useState<DealData>({
+  const [dealData, setDealData] = useState<Deal>({
     id: uuidv4(),
     name: '',
     address: '',
-    strategy: 'longTermRental',
+    strategy: DealTypes.LongTermRental,
     createdAt: new Date(),
     updatedAt: new Date(),
-    config: defaultConfig
+    config: defaultDealConfig,
   });
 
   // State for saved deals (would normally be in a database)
-  const [savedDeals, setSavedDeals] = useState<DealData[]>([]);
+  const [savedDeals, setSavedDeals] = useState<Deal[]>([]);
   
   // State to control whether to show the saved deals grid (commented out as currently unused)
   // const [showSavedDeals, setShowSavedDeals] = useState(false);
@@ -288,7 +120,7 @@ export default function DealAnalyzer() {
   };
 
   // Update deal data
-  const updateDealData = (updates: Partial<DealData>) => {
+  const updateDealData = (updates: Partial<Deal>) => {
     // Prevent circular updates - this function should only be updating dealData state
     // and not causing side effects that would trigger more state updates
     setDealData(prev => {
@@ -370,40 +202,6 @@ export default function DealAnalyzer() {
     setSelectedStrategy(null);
     setCurrentStep(0);
   };
-
-  // Load a saved deal (currently unused but kept for future use)
-  /* Commenting out unused functions to fix ESLint errors
-  const loadDeal = (dealId: string) => {
-    const dealToLoad = savedDeals.find(deal => deal.id === dealId);
-    if (dealToLoad) {
-      setDealData(dealToLoad);
-      setSelectedStrategy(dealToLoad.strategy);
-      // Go directly to the summary (final) step
-      const steps = dealToLoad.strategy ? strategySteps[dealToLoad.strategy] : [];
-      setCurrentStep(steps.length - 1);
-    }
-  };
-
-  // Delete a deal (currently unused but kept for future use)
-  const deleteDeal = (dealId: string) => {
-    toast.promise(
-      new Promise<void>((resolve) => {
-        setSavedDeals(savedDeals.filter(deal => deal.id !== dealId));
-        
-        // If the current deal is being deleted, create a new one
-        if (dealData.id === dealId) {
-          createNewDeal();
-        }
-        resolve();
-      }),
-      {
-        loading: 'Deleting deal...',
-        success: 'Deal deleted successfully!',
-        error: 'Failed to delete deal',
-      }
-    );
-  };
-  */
 
   // Render the current step content
   const renderStepContent = () => {
@@ -586,7 +384,7 @@ export default function DealAnalyzer() {
         case 'str-income':
           return (
             <ShortTermRentalIncome
-              strIncome={dealData.config.strIncome || defaultConfig.strIncome!}
+              strIncome={dealData.config.strIncome || defaultDealConfig.strIncome!}
               updateSTRIncome={(strIncome) => 
                 updateDealData({ 
                   config: { ...dealData.config, strIncome } 
@@ -597,8 +395,8 @@ export default function DealAnalyzer() {
         case 'expenses':
           return (
             <STRExpenses
-              strIncome={dealData.config.strIncome || defaultConfig.strIncome!}
-              strExpenses={dealData.config.strExpenses || defaultConfig.strExpenses!}
+              strIncome={dealData.config.strIncome || defaultDealConfig.strIncome!}
+              strExpenses={dealData.config.strExpenses || defaultDealConfig.strExpenses!}
               updateSTRExpenses={(strExpenses) => 
                 updateDealData({ 
                   config: { ...dealData.config, strExpenses } 
@@ -660,7 +458,7 @@ export default function DealAnalyzer() {
           return (
             <HouseHackDetails
               houseHack={{
-                ...defaultConfig.houseHack!,
+                ...defaultDealConfig.houseHack!,
                 ...dealData.config.houseHack,
                 purchasePrice: dealData.config.acquisition.purchasePrice
               }}

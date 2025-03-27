@@ -1,28 +1,14 @@
 'use client';
 
 import React from 'react';
-import { STRIncome } from './ShortTermRentalIncome';
 import CurrencyInput from '@/app/components/CurrencyInput';
 import PercentageInput from '@/app/components/PercentageInput';
-
-export interface STRExpenses {
-  propertyManagementFee: number; // Percentage of revenue
-  cleaningCosts: number; // Cost per clean
-  suppliesPerMonth: number;
-  utilityExpenses: number; // Monthly
-  propertyTaxes: number; // Annual
-  insurance: number; // Annual
-  furnitureReplacementPercent: number; // Percentage of revenue
-  maintenancePercent: number; // Percentage of revenue
-  advertisingPerMonth: number;
-  subscriptionServices: number; // Monthly
-  otherExpenses: number; // Monthly
-}
+import { STRIncomeType, STRExpensesType } from '../../models';
 
 interface STRExpensesProps {
-  strIncome: STRIncome;
-  strExpenses: STRExpenses;
-  updateSTRExpenses: (expenses: STRExpenses) => void;
+  strIncome: STRIncomeType;
+  strExpenses: STRExpensesType;
+  updateSTRExpenses: (expenses: STRExpensesType) => void;
 }
 
 export default function STRExpenses({ 
@@ -31,7 +17,7 @@ export default function STRExpenses({
   updateSTRExpenses 
 }: STRExpensesProps) {
   // Helper function to update a specific field
-  const updateField = <K extends keyof STRExpenses>(field: K, value: STRExpenses[K]) => {
+  const updateField = <K extends keyof STRExpensesType>(field: K, value: STRExpensesType[K]) => {
     updateSTRExpenses({
       ...strExpenses,
       [field]: value

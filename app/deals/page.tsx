@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { DealData } from './components/DealAnalyzer';
+import { Deal } from './models';
 import toast, { Toaster } from 'react-hot-toast';
 
 // Use dynamic import with no SSR to avoid hydration issues with client components
@@ -23,7 +23,7 @@ export default function DealsPage() {
 }
 
 function DealsContent() {
-  const [deals, setDeals] = useState<DealData[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateDeal, setShowCreateDeal] = useState(false);
   const searchParams = useSearchParams();
@@ -51,7 +51,7 @@ function DealsContent() {
           const apiDeals = await response.json();
           
           // Transform the API deals to match our expected format
-          const formattedApiDeals = apiDeals.map((deal: DealData) => ({
+          const formattedApiDeals = apiDeals.map((deal: Deal) => ({
             ...deal,
             createdAt: new Date(deal.createdAt),
             updatedAt: new Date(deal.updatedAt),
@@ -76,14 +76,14 @@ function DealsContent() {
             // Remove duplicates (same id)
             .filter((deal, index, self) => index === self.findIndex(d => d.id === deal.id))
             // Parse dates
-            .map((deal: DealData) => ({
+            .map((deal: Deal) => ({
               ...deal,
               createdAt: new Date(deal.createdAt),
               updatedAt: new Date(deal.updatedAt),
             }));
 
           // Sort by updated date (newest first)
-          combinedDeals.sort((a: DealData, b: DealData) => {
+          combinedDeals.sort((a: Deal, b: Deal) => {
             return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
           });
 
@@ -104,12 +104,12 @@ function DealsContent() {
 
           const combinedDeals = [...allDeals, ...brrrDeals]
             .filter((deal, index, self) => index === self.findIndex(d => d.id === deal.id))
-            .map((deal: DealData) => ({
+            .map((deal: Deal) => ({
               ...deal,
               createdAt: new Date(deal.createdAt),
               updatedAt: new Date(deal.updatedAt),
             }))
-            .sort((a: DealData, b: DealData) => {
+            .sort((a: Deal, b: Deal) => {
               return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             });
             
@@ -149,7 +149,7 @@ function DealsContent() {
           const investmentDeals = JSON.parse(investmentDealsJSON);
           localStorage.setItem(
             'investmentDeals',
-            JSON.stringify(investmentDeals.filter((deal: DealData) => deal.id !== dealId))
+            JSON.stringify(investmentDeals.filter((deal: Deal) => deal.id !== dealId))
           );
         }
 
@@ -158,7 +158,7 @@ function DealsContent() {
           const brrrDeals = JSON.parse(brrrDealsJSON);
           localStorage.setItem(
             'brrrDeals',
-            JSON.stringify(brrrDeals.filter((deal: DealData) => deal.id !== dealId))
+            JSON.stringify(brrrDeals.filter((deal: Deal) => deal.id !== dealId))
           );
         }
         return true;
@@ -172,7 +172,7 @@ function DealsContent() {
             const investmentDeals = JSON.parse(investmentDealsJSON);
             localStorage.setItem(
               'investmentDeals',
-              JSON.stringify(investmentDeals.filter((deal: DealData) => deal.id !== dealId))
+              JSON.stringify(investmentDeals.filter((deal: Deal) => deal.id !== dealId))
             );
           }
 
@@ -181,7 +181,7 @@ function DealsContent() {
             const brrrDeals = JSON.parse(brrrDealsJSON);
             localStorage.setItem(
               'brrrDeals',
-              JSON.stringify(brrrDeals.filter((deal: DealData) => deal.id !== dealId))
+              JSON.stringify(brrrDeals.filter((deal: Deal) => deal.id !== dealId))
             );
           }
           
@@ -217,7 +217,7 @@ function DealsContent() {
   };
 
   // Calculate metrics for display on the cards
-  const getDealMetrics = (deal: DealData) => {
+  const getDealMetrics = (deal: Deal) => {
     // These are simplified calculations for display on cards
     // ROI (Return on Investment)
     const purchasePrice = deal.config.acquisition?.purchasePrice || 0;

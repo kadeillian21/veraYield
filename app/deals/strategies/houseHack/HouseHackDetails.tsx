@@ -1,40 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { RentalUnit } from '../multifamily/MultiFamilyUnits';
 import CurrencyInput from '@/app/components/CurrencyInput';
 import NumberInput from '@/app/components/NumberInput';
 import PercentageInput from '@/app/components/PercentageInput';
-
-export interface HouseHackConfiguration {
-  // Owner's living details
-  ownerUnit: {
-    unitNumber: string;
-    bedrooms: number;
-    bathrooms: number;
-    sqft: number;
-    marketRent: number; // What you could rent it for
-    personalUsage: number; // Percentage of personal use
-    occupancyRate?: number; // Used when moving out
-  };
-  // Owner's expenses
-  currentHousingCost: number; // Current monthly rent or housing payment
-  personalUtilities: number;
-  combinedUtilities: number; // Utilities for the entire property
-  combinedInsurance: number; // Insurance for the entire property
-  combinedPropertyTax: number; // Property tax for the entire property
-  
-  // Additional rental units
-  rentalUnits: RentalUnit[];
-  
-  // Future plans
-  futurePlan: 'stay' | 'move-out' | 'sell'; // What to do after first year
-  futurePropertyValueChange: number; // Percentage
-  futureDateOfChange: number; // Months in future
-  
-  // Property value reference
-  purchasePrice?: number; // Property purchase price for equity calculations
-}
+import { HouseHackConfiguration, RentalUnit } from '../../models';
 
 interface HouseHackDetailsProps {
   houseHack: HouseHackConfiguration;

@@ -3,34 +3,19 @@
 import React from 'react';
 import CurrencyInput from '@/app/components/CurrencyInput';
 import PercentageInput from '@/app/components/PercentageInput';
+import { STRIncomeType } from '../../models';
 
-// Define interface for new STR Income structure
-export interface STRIncome {
-  peakSeasonDaily: number;
-  peakSeasonOccupancy: number;
-  peakSeasonMonths: number[];
-  midSeasonDaily: number;
-  midSeasonOccupancy: number;
-  midSeasonMonths: number[];
-  lowSeasonDaily: number;
-  lowSeasonOccupancy: number;
-  lowSeasonMonths: number[];
-  cleaningFee: number;
-  otherFees: number;
-  platformFee: number; // as a percentage
+interface STRIncomeProps {
+  strIncome: STRIncomeType;
+  updateSTRIncome: (strIncome: STRIncomeType) => void;
 }
 
-interface ShortTermRentalIncomeProps {
-  strIncome: STRIncome;
-  updateSTRIncome: (strIncome: STRIncome) => void;
-}
-
-export default function ShortTermRentalIncome({ 
+export default function STRIncome({ 
   strIncome, 
   updateSTRIncome 
-}: ShortTermRentalIncomeProps) {
+}: STRIncomeProps) {
   // Helper function to update a specific field
-  const updateField = <K extends keyof STRIncome>(field: K, value: STRIncome[K]) => {
+  const updateField = <K extends keyof STRIncomeType>(field: K, value: STRIncomeType[K]) => {
     updateSTRIncome({
       ...strIncome,
       [field]: value

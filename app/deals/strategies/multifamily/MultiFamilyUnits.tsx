@@ -4,16 +4,7 @@ import React, { useState } from 'react';
 import CurrencyInput from '@/app/components/CurrencyInput';
 import NumberInput from '@/app/components/NumberInput';
 import PercentageInput from '@/app/components/PercentageInput';
-
-export interface RentalUnit {
-  id: string;
-  unitNumber: string;
-  bedrooms: number;
-  bathrooms: number;
-  sqft: number;
-  monthlyRent: number;
-  occupancyRate: number; // stored as percentage (e.g., 95)
-}
+import { RentalUnit } from '../../models';
 
 interface MultiFamilyUnitsProps {
   units: RentalUnit[];

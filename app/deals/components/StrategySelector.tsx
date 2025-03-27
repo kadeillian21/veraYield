@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { InvestmentStrategy } from './DealAnalyzer';
+import { InvestmentStrategy } from '../models';
 
 interface StrategySelectorProps {
   onStrategySelect: (strategy: InvestmentStrategy) => void;

@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { DealData } from '../../components/dealAnalyzer/DealAnalyzer';
+import { Deal } from '../../deals/models';
 import { Chart, ChartConfiguration, ChartData, ChartTypeRegistry } from 'chart.js/auto';
 
 interface ComparisonChartProps {
-  deals: DealData[];
+  deals: Deal[];
   selectedDeals: string[];
 }
 

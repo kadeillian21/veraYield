@@ -11,9 +11,7 @@ import RefinanceDetails from '../../components/RefinanceDetails';
 import ProjectionSettings from '../../components/ProjectionSettings';
 import DealSummary from '../../components/DealSummary';
 import { ProjectionConfig } from '../../../utils/deals/projectionEngine';
-
-// Using DealData type from DealAnalyzer to stay consistent
-import { DealData } from '../../components/DealAnalyzer';
+import { Deal, DealTypes } from '../../models';
 
 // Default projection configuration
 const defaultConfig: ProjectionConfig = {
@@ -96,18 +94,18 @@ export default function BRRRRCalculator() {
   const [currentStep, setCurrentStep] = useState(0);
   
   // State for the deal data
-  const [dealData, setDealData] = useState<DealData>({
+  const [dealData, setDealData] = useState<Deal>({
     id: uuidv4(),
     name: 'New BRRRR Deal',
     address: '',
-    strategy: 'brrrr',
+    strategy: DealTypes.BRRRR,
     createdAt: new Date(),
     updatedAt: new Date(),
     config: defaultConfig
   });
 
   // State for saved deals (would normally be in a database)
-  const [savedDeals, setSavedDeals] = useState<DealData[]>([]);
+  const [savedDeals, setSavedDeals] = useState<Deal[]>([]);
 
   // Load saved deals from localStorage on component mount
   useEffect(() => {
@@ -164,7 +162,7 @@ export default function BRRRRCalculator() {
   };
 
   // Update deal data
-  const updateDealData = (updates: Partial<DealData>) => {
+  const updateDealData = (updates: Partial<Deal>) => {
     setDealData(prev => ({
       ...prev,
       ...updates,
@@ -226,7 +224,7 @@ export default function BRRRRCalculator() {
       id: uuidv4(),
       name: 'New BRRRR Deal',
       address: '',
-      strategy: 'brrrr',
+      strategy: DealTypes.BRRRR,
       createdAt: new Date(),
       updatedAt: new Date(),
       config: defaultConfig

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { DealData } from './DealAnalyzer';
+import { Deal } from '../models';
 import { useDebounce } from 'use-debounce';
 
 // Interfaces for the autocomplete API responses
@@ -22,8 +22,8 @@ interface PlaceDetailsResponse {
 
 // Now supports both the BRRRR calculator and the deal analyzer
 interface PropertyInfoProps {
-  dealData: DealData;
-  updateDealData: (updates: Partial<DealData>) => void;
+  dealData: Deal;
+  updateDealData: (updates: Partial<Deal>) => void;
 }
 
 export default function PropertyInfo({ dealData, updateDealData }: PropertyInfoProps) {

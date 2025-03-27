@@ -4,12 +4,12 @@ import React, { useState, useEffect, Suspense } from 'react';
 import ComparisonSelector from './components/ComparisonSelector';
 import ComparisonTable from './components/ComparisonTable';
 import ComparisonChart from './components/ComparisonChart';
-import { DealData } from '../components/dealAnalyzer/DealAnalyzer';
+import { Deal } from '../deals/models';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 
 export default function ComparePage() {
-  const [deals, setDeals] = useState<DealData[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [selectedDeals, setSelectedDeals] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
@@ -23,7 +23,7 @@ export default function ComparePage() {
 }
 
 function ComparPageContent() {
-  const [deals, setDeals] = useState<DealData[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [selectedDeals, setSelectedDeals] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'table' | 'chart'>('table');
@@ -49,7 +49,7 @@ function ComparPageContent() {
           const apiDeals = await response.json();
           
           // Transform the API deals to match our expected format
-          const formattedApiDeals = apiDeals.map((deal: DealData) => ({
+          const formattedApiDeals = apiDeals.map((deal: Deal) => ({
             ...deal,
             createdAt: new Date(deal.createdAt),
             updatedAt: new Date(deal.updatedAt),
@@ -70,18 +70,18 @@ function ComparPageContent() {
           // Combine all deals
           const combinedDeals = [...allDeals, ...brrrDeals]
             // Remove duplicates (same id)
-            .filter((deal: DealData, index: number, self: DealData[]) => 
+            .filter((deal: Deal, index: number, self: Deal[]) => 
               index === self.findIndex(d => d.id === deal.id)
             )
             // Parse dates
-            .map((deal: DealData) => ({
+            .map((deal: Deal) => ({
               ...deal,
               createdAt: new Date(deal.createdAt),
               updatedAt: new Date(deal.updatedAt),
             }));
 
           // Sort by updated date (newest first)
-          combinedDeals.sort((a: DealData, b: DealData) => {
+          combinedDeals.sort((a: Deal, b: Deal) => {
             return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
           });
 
@@ -99,15 +99,15 @@ function ComparPageContent() {
           const brrrDeals = brrrDealsJSON ? JSON.parse(brrrDealsJSON) : [];
 
           const combinedDeals = [...allDeals, ...brrrDeals]
-            .filter((deal: DealData, index: number, self: DealData[]) => 
+            .filter((deal: Deal, index: number, self: Deal[]) => 
               index === self.findIndex(d => d.id === deal.id)
             )
-            .map((deal: DealData) => ({
+            .map((deal: Deal) => ({
               ...deal,
               createdAt: new Date(deal.createdAt),
               updatedAt: new Date(deal.updatedAt),
             }))
-            .sort((a: DealData, b: DealData) => {
+            .sort((a: Deal, b: Deal) => {
               return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
             });
             

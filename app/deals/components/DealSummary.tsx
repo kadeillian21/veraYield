@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { DealData } from './DealAnalyzer';
+import { Deal } from '../models';
 import { 
   generateProjection, 
   ProjectionResult 
@@ -9,7 +9,7 @@ import ROIComparisonChart from './ROIComparisonChart';
 import jsPDF from 'jspdf';
 
 interface DealSummaryProps {
-  dealData: DealData;
+  dealData: Deal;
 }
 
 export default function DealSummary({

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import DealSummary from '../components/DealSummary';
-import { DealData } from '../components/DealAnalyzer';
+import { Deal } from '../models';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -11,7 +11,7 @@ export default function DealPage({
 }: {
   params: { id: string };
 }) {
-  const [deal, setDeal] = useState<DealData | null>(null);
+  const [deal, setDeal] = useState<Deal | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -127,7 +127,7 @@ export default function DealPage({
           const investmentDeals = JSON.parse(investmentDealsJSON);
           localStorage.setItem(
             'investmentDeals',
-            JSON.stringify(investmentDeals.filter((d: DealData) => d.id !== deal.id))
+            JSON.stringify(investmentDeals.filter((d: Deal) => d.id !== deal.id))
           );
         }
 
@@ -136,7 +136,7 @@ export default function DealPage({
           const brrrDeals = JSON.parse(brrrDealsJSON);
           localStorage.setItem(
             'brrrDeals',
-            JSON.stringify(brrrDeals.filter((d: DealData) => d.id !== deal.id))
+            JSON.stringify(brrrDeals.filter((d: Deal) => d.id !== deal.id))
           );
         }
         
@@ -152,7 +152,7 @@ export default function DealPage({
             const investmentDeals = JSON.parse(investmentDealsJSON);
             localStorage.setItem(
               'investmentDeals',
-              JSON.stringify(investmentDeals.filter((d: DealData) => d.id !== deal.id))
+              JSON.stringify(investmentDeals.filter((d: Deal) => d.id !== deal.id))
             );
           }
 
@@ -161,7 +161,7 @@ export default function DealPage({
             const brrrDeals = JSON.parse(brrrDealsJSON);
             localStorage.setItem(
               'brrrDeals',
-              JSON.stringify(brrrDeals.filter((d: DealData) => d.id !== deal.id))
+              JSON.stringify(brrrDeals.filter((d: Deal) => d.id !== deal.id))
             );
           }
           
