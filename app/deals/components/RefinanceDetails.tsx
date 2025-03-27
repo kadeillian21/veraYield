@@ -4,11 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   PropertyAcquisition,
   RefinanceEvent 
-} from '../../../utils/brrrCalculator/projectionEngine';
-import { calculateMinimumARV } from '../../../utils/brrrCalculator/refinanceCalculator';
-import CurrencyInput from '../../../components/CurrencyInput';
-import PercentageInput from './ui/PercentageInput';
-import NumberInput from './ui/NumberInput';
+} from '../../utils/deals/projectionEngine';
+import { calculateMinimumARV } from '../../utils/deals/refinanceCalculator';
+import CurrencyInput from '@/app/components/CurrencyInput';
+import NumberInput from '@/app/components/NumberInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 interface RefinanceDetailsProps {
   refinanceEvents: RefinanceEvent[];

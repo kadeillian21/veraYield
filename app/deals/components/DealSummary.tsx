@@ -1,14 +1,12 @@
 'use client';
-
 import React, { useState, useEffect, useRef } from 'react';
-import { DealData } from '../dealAnalyzer/DealAnalyzer';
+import { DealData } from './DealAnalyzer';
 import { 
   generateProjection, 
   ProjectionResult 
-} from '../../../utils/brrrCalculator/projectionEngine';
+} from '../../utils/deals/projectionEngine';
 import ROIComparisonChart from './ROIComparisonChart';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 interface DealSummaryProps {
   dealData: DealData;

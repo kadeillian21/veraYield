@@ -6,9 +6,9 @@ import {
   RentChangeEvent,
   ExpenseChangeEvent,
   RefinanceEvent 
-} from '../../../utils/brrrCalculator/projectionEngine';
-import PercentageInput from './ui/PercentageInput';
-import NumberInput from './ui/NumberInput';
+} from '../../utils/deals/projectionEngine';
+import NumberInput from '@/app/components/NumberInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 interface ProjectionSettingsProps {
   projectionMonths: number;

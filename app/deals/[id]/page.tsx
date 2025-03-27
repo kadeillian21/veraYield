@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import DealSummary from '../../components/brrrCalculator/DealSummary';
-import { DealData } from '../../components/dealAnalyzer/DealAnalyzer';
+import DealSummary from '../components/DealSummary';
+import { DealData } from '../components/DealAnalyzer';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

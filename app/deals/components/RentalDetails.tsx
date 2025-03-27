@@ -6,10 +6,10 @@ import {
   RentChangeEvent,
   ExpenseChangeEvent,
   CapitalExpenseEvent
-} from '../../../utils/brrrCalculator/projectionEngine';
-import CurrencyInput from '../../../components/CurrencyInput';
-import PercentageInput from './ui/PercentageInput';
-import NumberInput from './ui/NumberInput';
+} from '../../utils/deals/projectionEngine';
+import CurrencyInput from '@/app/components/CurrencyInput';
+import NumberInput from '@/app/components/NumberInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 interface RentalDetailsProps {
   operation: PropertyOperation;

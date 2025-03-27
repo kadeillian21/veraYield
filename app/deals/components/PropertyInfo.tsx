@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { DealData } from '../dealAnalyzer/DealAnalyzer';
+import { DealData } from './DealAnalyzer';
 import { useDebounce } from 'use-debounce';
 
 // Interfaces for the autocomplete API responses

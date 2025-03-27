@@ -10,7 +10,7 @@ import RentalDetails from '../../components/brrrCalculator/RentalDetails';
 import RefinanceDetails from '../../components/brrrCalculator/RefinanceDetails';
 import ProjectionSettings from '../../components/brrrCalculator/ProjectionSettings';
 import DealSummary from '../../components/brrrCalculator/DealSummary';
-import { ProjectionConfig } from '../../../utils/brrrCalculator/projectionEngine';
+import { ProjectionConfig } from '../../../utils/deals/projectionEngine';
 
 // Using DealData type from DealAnalyzer to stay consistent
 import { DealData } from '../../components/dealAnalyzer/DealAnalyzer';
