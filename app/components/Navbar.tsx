@@ -24,7 +24,7 @@ const Navbar = () => {
             <ul className="flex space-x-6">
               <li>
                 <Link 
-                  href="/" 
+                  href="/deals" 
                   className={`text-white hover:text-turquoise transition-colors ${
                     pathname === '/' ? 'text-turquoise font-semibold' : ''
                   }`}
@@ -97,7 +97,7 @@ const Navbar = () => {
           <Link 
             href="/" 
             className={`block py-2 text-white hover:text-turquoise ${
-              pathname === '/' ? 'text-turquoise font-semibold' : ''
+              pathname === '/deals' ? 'text-turquoise font-semibold' : ''
             }`}
             onClick={() => setIsMenuOpen(false)}
           >
