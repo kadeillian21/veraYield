@@ -12,6 +12,9 @@ const Footer = () => {
           </div>
           
           <div className="flex space-x-6">
+            <a href="/contact" className="text-white/80 hover:text-white transition-colors">
+              Contact Us
+            </a>
             <a href="#" className="text-white/80 hover:text-white transition-colors">
               Terms of Service
             </a>
