@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { 
   PropertyAcquisition,
   RefinanceEvent 
-} from '../../utils/brrrCalculator/projectionEngine';
-import { calculateMinimumARV } from '../../utils/brrrCalculator/refinanceCalculator';
-import CurrencyInput from '../common/CurrencyInput';
+} from '../../../utils/brrrCalculator/projectionEngine';
+import { calculateMinimumARV } from '../../../utils/brrrCalculator/refinanceCalculator';
+import CurrencyInput from '../../../components/CurrencyInput';
 import PercentageInput from './ui/PercentageInput';
 import NumberInput from './ui/NumberInput';
 

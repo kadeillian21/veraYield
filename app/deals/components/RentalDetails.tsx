@@ -6,8 +6,8 @@ import {
   RentChangeEvent,
   ExpenseChangeEvent,
   CapitalExpenseEvent
-} from '../../utils/brrrCalculator/projectionEngine';
-import CurrencyInput from '../common/CurrencyInput';
+} from '../../../utils/brrrCalculator/projectionEngine';
+import CurrencyInput from '../../../components/CurrencyInput';
 import PercentageInput from './ui/PercentageInput';
 import NumberInput from './ui/NumberInput';
 

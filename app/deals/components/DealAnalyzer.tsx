@@ -12,10 +12,10 @@ import RentalDetails from '../brrrCalculator/RentalDetails';
 import RefinanceDetails from '../brrrCalculator/RefinanceDetails';
 import ProjectionSettings from '../brrrCalculator/ProjectionSettings';
 import DealSummary from '../brrrCalculator/DealSummary';
-import ShortTermRentalIncome, { STRIncome } from './ShortTermRentalIncome';
-import STRExpenses, { STRExpenses as STRExpensesType } from './STRExpenses';
-import MultiFamilyUnits, { RentalUnit } from './MultiFamilyUnits';
-import HouseHackDetails, { HouseHackConfiguration } from './HouseHackDetails';
+import ShortTermRentalIncome, { STRIncome } from '../../strategies/shortTermRentals/ShortTermRentalIncome';
+import STRExpenses, { STRExpenses as STRExpensesType } from '../../strategies/shortTermRentals/STRExpenses';
+import MultiFamilyUnits, { RentalUnit } from '../../strategies/multifamily/MultiFamilyUnits';
+import HouseHackDetails, { HouseHackConfiguration } from '../../strategies/houseHack/HouseHackDetails';
 import { ProjectionConfig } from '../../utils/brrrCalculator/projectionEngine';
 
 // Investment strategies supported by the calculator

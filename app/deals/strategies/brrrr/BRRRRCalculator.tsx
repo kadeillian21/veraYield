@@ -2,18 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Timeline from './Timeline';
-import PropertyInfo from './PropertyInfo';
-import AcquisitionDetails from './AcquisitionDetails';
-import RehabDetails from './RehabDetails';
-import RentalDetails from './RentalDetails';
-import RefinanceDetails from './RefinanceDetails';
-import ProjectionSettings from './ProjectionSettings';
-import DealSummary from './DealSummary';
-import { ProjectionConfig } from '../../utils/brrrCalculator/projectionEngine';
+import Timeline from '../../components/brrrCalculator/Timeline';
+import PropertyInfo from '../../components/brrrCalculator/PropertyInfo';
+import AcquisitionDetails from '../../components/AcquisitionDetails';
+import RehabDetails from '../../components/brrrCalculator/RehabDetails';
+import RentalDetails from '../../components/brrrCalculator/RentalDetails';
+import RefinanceDetails from '../../components/brrrCalculator/RefinanceDetails';
+import ProjectionSettings from '../../components/brrrCalculator/ProjectionSettings';
+import DealSummary from '../../components/brrrCalculator/DealSummary';
+import { ProjectionConfig } from '../../../utils/brrrCalculator/projectionEngine';
 
 // Using DealData type from DealAnalyzer to stay consistent
-import { DealData } from '../dealAnalyzer/DealAnalyzer';
+import { DealData } from '../../components/dealAnalyzer/DealAnalyzer';
 
 // Default projection configuration
 const defaultConfig: ProjectionConfig = {

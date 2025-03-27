@@ -1,8 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import ComparisonSelector from './components/ComparisonSelector';
 import ComparisonTable from './components/ComparisonTable';
 import ComparisonChart from './components/ComparisonChart';
@@ -154,11 +152,10 @@ function ComparPageContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-      <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-center mb-8">Compare Investment Deals</h1>
         <p className="text-center mb-8 max-w-3xl mx-auto">
           Select up to 5 deals from your portfolio to compare side by side. Quickly identify which 
@@ -216,9 +213,7 @@ function ComparPageContent() {
             selectedDeals={selectedDeals}
           />
         )}
-      </main>
-      
-      <Footer />
+      </div>
     </div>
   );
 }

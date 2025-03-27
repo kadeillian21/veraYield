@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { PropertyAcquisition, HoldingCosts, CapitalExpenseEvent } from '../../utils/brrrCalculator/projectionEngine';
-import CurrencyInput from '../common/CurrencyInput';
+import { PropertyAcquisition, HoldingCosts, CapitalExpenseEvent } from '../../../utils/brrrCalculator/projectionEngine';
+import CurrencyInput from '../../../components/CurrencyInput';
 import NumberInput from './ui/NumberInput';
 
 interface RehabDetailsProps {

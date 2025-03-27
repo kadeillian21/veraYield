@@ -5,7 +5,7 @@ import { DealData } from '../dealAnalyzer/DealAnalyzer';
 import { 
   generateProjection, 
   ProjectionResult 
-} from '../../utils/brrrCalculator/projectionEngine';
+} from '../../../utils/brrrCalculator/projectionEngine';
 import ROIComparisonChart from './ROIComparisonChart';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';

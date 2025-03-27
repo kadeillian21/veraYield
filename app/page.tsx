@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -276,11 +274,10 @@ function HomeContent({
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div>
       <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
-      <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-center mb-8">VeraYield Investment Analyzer</h1>
         <p className="text-center mb-8 max-w-3xl mx-auto">
           Analyze different real estate investment strategies including long-term rentals, 
@@ -440,9 +437,7 @@ function HomeContent({
         
         {/* Create Deals View */}
         {(showCreateDeal || deals.length === 0) && <DealAnalyzer />}
-      </main>
-      
-      <Footer />
+      </div>
     </div>
   );
 }

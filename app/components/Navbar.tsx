@@ -4,9 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import AuthButton from './auth/AuthButton';
+import AuthButton from '../auth/signin/components/AuthButton';
 
-const Header = () => {
+const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -127,4 +127,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Navbar;

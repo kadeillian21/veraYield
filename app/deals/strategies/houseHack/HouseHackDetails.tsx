@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import CurrencyInput from '../common/CurrencyInput';
 import PercentageInput from '../common/PercentageInput';
 import NumberInput from '../common/NumberInput';
-import { RentalUnit } from './MultiFamilyUnits';
+import { RentalUnit } from '../multifamily/MultiFamilyUnits';
 
 export interface HouseHackConfiguration {
   // Owner's living details

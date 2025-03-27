@@ -6,7 +6,7 @@ import {
   RentChangeEvent,
   ExpenseChangeEvent,
   RefinanceEvent 
-} from '../../utils/brrrCalculator/projectionEngine';
+} from '../../../utils/brrrCalculator/projectionEngine';
 import PercentageInput from './ui/PercentageInput';
 import NumberInput from './ui/NumberInput';
 
