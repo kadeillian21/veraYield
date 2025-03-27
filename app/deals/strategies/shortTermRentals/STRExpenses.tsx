@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import CurrencyInput from '../common/CurrencyInput';
-import PercentageInput from '../common/PercentageInput';
 import { STRIncome } from './ShortTermRentalIncome';
+import CurrencyInput from '@/app/components/CurrencyInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 export interface STRExpenses {
   propertyManagementFee: number; // Percentage of revenue

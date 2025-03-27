@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import CurrencyInput from '../common/CurrencyInput';
-import PercentageInput from '../common/PercentageInput';
+import CurrencyInput from '@/app/components/CurrencyInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 // Define interface for new STR Income structure
 export interface STRIncome {

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import CurrencyInput from '../common/CurrencyInput';
-import PercentageInput from '../common/PercentageInput';
-import NumberInput from '../common/NumberInput';
 import { RentalUnit } from '../multifamily/MultiFamilyUnits';
+import CurrencyInput from '@/app/components/CurrencyInput';
+import NumberInput from '@/app/components/NumberInput';
+import PercentageInput from '@/app/components/PercentageInput';
 
 export interface HouseHackConfiguration {
   // Owner's living details
