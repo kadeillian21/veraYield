@@ -6,7 +6,7 @@ import {
   RefinanceEvent 
 } from '../../utils/brrrCalculator/projectionEngine';
 import { calculateMinimumARV } from '../../utils/brrrCalculator/refinanceCalculator';
-import CurrencyInput from './ui/CurrencyInput';
+import CurrencyInput from '../common/CurrencyInput';
 import PercentageInput from './ui/PercentageInput';
 import NumberInput from './ui/NumberInput';
 

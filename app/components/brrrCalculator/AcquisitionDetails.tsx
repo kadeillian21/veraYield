@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { PropertyAcquisition } from '../../utils/brrrCalculator/projectionEngine';
-import CurrencyInput from './ui/CurrencyInput';
+import CurrencyInput from '../common/CurrencyInput';
 import PercentageInput from './ui/PercentageInput';
 
 interface AcquisitionDetailsProps {

@@ -1,10 +1,8 @@
 'use client';
 
 import React from 'react';
-import CurrencyInput from '../brrrCalculator/ui/CurrencyInput';
-import PercentageInput from '../brrrCalculator/ui/PercentageInput';
-// NumberInput is imported but not used
-// import NumberInput from '../brrrCalculator/ui/NumberInput';
+import CurrencyInput from '../common/CurrencyInput';
+import PercentageInput from '../common/PercentageInput';
 
 // Define interface for new STR Income structure
 export interface STRIncome {

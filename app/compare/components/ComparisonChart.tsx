@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import { DealData } from '../dealAnalyzer/DealAnalyzer';
+import { DealData } from '../../components/dealAnalyzer/DealAnalyzer';
 import { Chart, ChartConfiguration, ChartData, ChartTypeRegistry } from 'chart.js/auto';
 
 interface ComparisonChartProps {

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import CurrencyInput from '../brrrCalculator/ui/CurrencyInput';
-import PercentageInput from '../brrrCalculator/ui/PercentageInput';
+import CurrencyInput from '../common/CurrencyInput';
+import PercentageInput from '../common/PercentageInput';
 import { STRIncome } from './ShortTermRentalIncome';
 
 export interface STRExpenses {

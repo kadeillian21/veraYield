@@ -3,9 +3,9 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import ComparisonSelector from '../components/dealComparison/ComparisonSelector';
-import ComparisonTable from '../components/dealComparison/ComparisonTable';
-import ComparisonChart from '../components/dealComparison/ComparisonChart';
+import ComparisonSelector from './components/ComparisonSelector';
+import ComparisonTable from './components/ComparisonTable';
+import ComparisonChart from './components/ComparisonChart';
 import { DealData } from '../components/dealAnalyzer/DealAnalyzer';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';

@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import CurrencyInput from '../brrrCalculator/ui/CurrencyInput';
-import PercentageInput from '../brrrCalculator/ui/PercentageInput';
-import NumberInput from '../brrrCalculator/ui/NumberInput';
+import CurrencyInput from '../common/CurrencyInput';
+import PercentageInput from '../common/PercentageInput';
+import NumberInput from '../common/NumberInput';
 
 export interface RentalUnit {
   id: string;
